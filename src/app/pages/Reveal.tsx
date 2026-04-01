@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router';
-import { useApp } from '../context/AppContext';
+import { useApp, getUserLabel } from '../context/AppContext';
 import { Avatar } from '../components/ui/avatar';
 import { ScreenHeader } from '../components/ui/ScreenHeader';
 
@@ -154,7 +154,7 @@ export function Reveal() {
 }
 
 function RatingCard({ user, rating }: { user: 'alex' | 'jamie'; rating: number }) {
-  const name = user === 'alex' ? 'Alex' : 'Jamie';
+  const name = getUserLabel(user);
   return (
     <div
       className="flex-1 rounded-2xl p-4 flex flex-col items-center"

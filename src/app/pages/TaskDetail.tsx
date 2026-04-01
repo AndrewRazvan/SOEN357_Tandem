@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router';
 import { CheckCircle2, Circle, Lock } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import { useApp, getUserLabel } from '../context/AppContext';
 import { ScreenHeader } from '../components/ui/ScreenHeader';
 import { Avatar } from '../components/ui/avatar';
 
@@ -118,7 +118,7 @@ export function TaskDetail() {
               <Avatar user={task.assignedTo} size="lg" />
               <div>
                 <p style={{ fontSize: '16px', fontWeight: 500, color: '#1C1C1E' }}>
-                  {task.assignedTo === 'alex' ? 'Alex' : 'Jamie'}
+                  {getUserLabel(task.assignedTo!)}
                 </p>
                 {task.assignedTo === currentUser && (
                   <p style={{ fontSize: '13px', color: '#7B9D8F' }}>That's you</p>
@@ -185,7 +185,7 @@ export function TaskDetail() {
             <div className="flex items-center gap-2">
               <Lock size={16} strokeWidth={2} style={{ color: '#B0ADAA' }} />
               <span style={{ color: '#8E8E93', fontSize: '15px', fontWeight: 500 }}>
-                Only {task.assignedTo === 'alex' ? 'Alex' : 'Jamie'} can mark this done
+                Only {getUserLabel(task.assignedTo!)} can mark this done
               </span>
             </div>
             <p style={{ fontSize: '12px', color: '#B0ADAA' }}>
@@ -207,7 +207,7 @@ function RatingPill({ user, rating }: { user: 'alex' | 'jamie'; rating: number }
       <Avatar user={user} size="sm" />
       <div>
         <span style={{ fontSize: '13px', color: '#8E8E93' }}>
-          {user === 'alex' ? 'Alex' : 'Jamie'}
+          {getUserLabel(user)}
         </span>
         <span style={{ fontSize: '14px', fontWeight: 600, color: '#1C1C1E', marginLeft: 6 }}>
           {rating}
