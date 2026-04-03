@@ -1,4 +1,5 @@
 import type { Task, User } from '../../context/AppContext';
+import { getUserLabel } from '../../context/AppContext';
 import { Avatar } from './avatar';
 
 interface ContributionBarProps {
@@ -28,7 +29,7 @@ function getBalanceStatus(alexStats: ReturnType<typeof getStats>, jamieStats: Re
   if (diff < 0.18 && pendingDiff <= 2) {
     return { label: 'Things look balanced ✓', balanced: true };
   }
-  const higherPending = alexStats.pending > jamieStats.pending ? 'Alex' : 'Jamie';
+  const higherPending = alexStats.pending > jamieStats.pending ? getUserLabel('alex') : getUserLabel('jamie');
   return {
     label: `${higherPending} could use a few more tasks to even things out`,
     balanced: false,
@@ -85,7 +86,7 @@ export function ContributionBar({ tasks }: ContributionBarProps) {
 }
 
 function UserStat({ user, stats }: { user: User; stats: { total: number; completed: number; pending: number } }) {
-  const name = user === 'alex' ? 'Alex' : 'Jamie';
+  const name = getUserLabel(user);
   return (
     <div className="flex-1 flex items-center gap-2.5">
       <Avatar user={user} size="sm" />

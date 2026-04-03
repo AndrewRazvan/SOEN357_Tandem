@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Lock } from 'lucide-react';
-import { useApp, type User } from '../context/AppContext';
+import { useApp, type User, getUserLabel } from '../context/AppContext';
 import { BurdenSelector } from '../components/ui/BurdenSelector';
 import { Avatar } from '../components/ui/avatar';
 
@@ -12,9 +12,13 @@ export function PrivateRating() {
 
   const [rating, setRating] = useState<number | null>(null);
 
+  useEffect(() => {
+    setRating(null);
+  }, [userParam]);
+
   const task = getTask(taskId!);
   const user = (userParam as User) || 'alex';
-  const name = user === 'alex' ? 'Alex' : 'Jamie';
+  const name = getUserLabel(user);
 
   if (!task) {
     return (
@@ -119,7 +123,7 @@ export function PrivateRating() {
         </button>
         <p className="text-center mt-3" style={{ fontSize: '13px', color: '#8E8E93' }}>
           {user === 'alex'
-            ? "Jamie will rate next — privately."
+            ? `${getUserLabel('jamie')} will rate next — privately.`
             : "Both ratings will be revealed together."}
         </p>
       </div>

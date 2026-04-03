@@ -178,6 +178,13 @@ export function useApp() {
 }
 
 export function getUserLabel(user: User): string {
+  try {
+    const stored = localStorage.getItem('tandem_user_names');
+    if (stored) {
+      const names = JSON.parse(stored) as Record<string, string>;
+      if (names[user]) return names[user];
+    }
+  } catch {}
   return user === 'alex' ? 'Alex' : 'Jamie';
 }
 

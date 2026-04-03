@@ -238,7 +238,7 @@ export function Agreement() {
             style={{ background: '#EBF0F7' }}
           >
             <p style={{ fontSize: '13px', color: '#3D6080', fontWeight: 500 }}>
-              ✓ Alex has confirmed — now pass to Jamie to confirm.
+              ✓ {getUserLabel('alex')} has confirmed — now pass to {getUserLabel('jamie')} to confirm.
             </p>
           </div>
         )}
@@ -276,7 +276,7 @@ function ConfirmButton({
   isActive: boolean;
   onConfirm?: () => void;
 }) {
-  const name = user === 'alex' ? 'Alex' : 'Jamie';
+  const name = getUserLabel(user);
   return (
     <button
       onClick={onConfirm}

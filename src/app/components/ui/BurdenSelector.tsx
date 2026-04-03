@@ -13,6 +13,17 @@ const LABELS: Record<number, string> = {
   7: 'Very heavy',
 };
 
+// Green → Yellow → Red (1 = lightest/green, 7 = heaviest/red)
+const RATING_COLORS: Record<number, string> = {
+  1: '#4A9940',
+  2: '#7DB83A',
+  3: '#B8CC3A',
+  4: '#F0C030',
+  5: '#F0A040',
+  6: '#E86848',
+  7: '#D63C3C',
+};
+
 export function BurdenSelector({ value, onChange }: BurdenSelectorProps) {
   return (
     <div className="w-full">
@@ -26,7 +37,7 @@ export function BurdenSelector({ value, onChange }: BurdenSelectorProps) {
               onClick={() => onChange(n)}
               className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl transition-all duration-150 active:scale-95"
               style={{
-                background: selected ? '#7B9D8F' : '#EFEDE8',
+                background: selected ? RATING_COLORS[n] : '#EFEDE8',
                 minHeight: 64,
                 outline: 'none',
               }}
@@ -56,9 +67,9 @@ export function BurdenSelector({ value, onChange }: BurdenSelectorProps) {
       {value !== null && (
         <div
           className="mt-4 text-center py-3 rounded-xl"
-          style={{ background: '#EEF5F2' }}
+          style={{ background: RATING_COLORS[value] + '22' }}
         >
-          <span style={{ fontSize: '15px', fontWeight: 500, color: '#3D7A65' }}>
+          <span style={{ fontSize: '15px', fontWeight: 500, color: RATING_COLORS[value] }}>
             {LABELS[value!]}
           </span>
         </div>
