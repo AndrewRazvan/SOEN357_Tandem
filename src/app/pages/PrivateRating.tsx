@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Lock } from 'lucide-react';
-import { useApp, type User, getUserLabel } from '../context/AppContext';
+import {
+  useApp,
+  getOtherUser,
+  getUserFromPathSegment,
+  getUserLabel,
+  getUserPathSegment,
+} from '../context/AppContext';
 import { BurdenSelector } from '../components/ui/BurdenSelector';
 import { Avatar } from '../components/ui/avatar';
 
+/**
+ * Private rating step: each user rates burden independently. This screen is
+ * parameterized by route (`/rate/:taskId/:user`) to support the “pass-the-phone” flow.
+ */
 export function PrivateRating() {
   const { taskId, user: userParam } = useParams<{ taskId: string; user: string }>();
   const navigate = useNavigate();
@@ -13,11 +23,13 @@ export function PrivateRating() {
   const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
+    // Reset selection when the route switches between users.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRating(null);
   }, [userParam]);
 
   const task = getTask(taskId!);
-  const user = (userParam as User) || 'alex';
+  const user = getUserFromPathSegment(userParam);
   const name = getUserLabel(user);
 
   if (!task) {
@@ -31,13 +43,13 @@ export function PrivateRating() {
   const handleSubmit = () => {
     if (rating === null) return;
 
-    // Switch to this user for the rating
+    // Align the app's “current profile” with whoever is rating.
     switchUser(user);
     rateTask(taskId!, user, rating);
 
     if (user === 'alex') {
-      // Next: Jamie rates
-      navigate(`/rate/${taskId}/jamie`);
+      // Next: second user rates.
+      navigate(`/rate/${taskId}/${getUserPathSegment(getOtherUser(user))}`);
     } else {
       // Both rated → go to reveal
       navigate(`/reveal/${taskId}`);

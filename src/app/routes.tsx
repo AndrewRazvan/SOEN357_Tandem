@@ -8,6 +8,7 @@ import { Agreement } from './pages/Agreement.tsx';
 import { TaskDetail } from './pages/TaskDetail.tsx';
 import { Welcome } from './pages/Welcome.tsx';
 
+// Primary flow: create → rate (Alex) → rate (Jamie) → reveal → agree/assign → task detail.
 export const router = createBrowserRouter([
   {
     path: '/',

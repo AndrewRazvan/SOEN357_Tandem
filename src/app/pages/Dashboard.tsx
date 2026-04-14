@@ -1,17 +1,20 @@
 import { useNavigate } from 'react-router';
 import { Plus } from 'lucide-react';
-import { useApp, type Task } from '../context/AppContext';
+import { getUserLabel, getUserPathSegment, useApp, type Task } from '../context/AppContext';
 import { ContributionBar } from '../components/ui/ContributionBar';
 import { TaskCard } from '../components/ui/TaskCard';
 import { ProfileSwitcher } from '../components/ui/ProfileSwitcher';
 
+/**
+ * Dashboard: a single home screen that groups tasks by state and provides
+ * the next action for anything currently in the negotiation flow.
+ */
 export function Dashboard() {
   const { tasks, currentUser, switchUser } = useApp();
   const navigate = useNavigate();
 
-  const pending = tasks.filter(
-    (t) => t.status === 'assigned'
-  );
+  // “Pending” = agreed + assigned, but not marked complete yet.
+  const pending = tasks.filter((t) => t.status === 'assigned');
   const complete = tasks.filter((t) => t.status === 'complete');
 
   // Tasks still in the negotiation flow
@@ -138,17 +141,20 @@ function SectionLabel({ label, count, accent }: { label: string; count: number; 
 
 function InProgressCard({ task }: { task: Task }) {
   const navigate = useNavigate();
+  const alexName = getUserLabel('alex');
+  const jamieName = getUserLabel('jamie');
 
+  // Map a task's state to the next “resume the flow” action.
   const statusMap: Record<string, { label: string; action: string; path: string }> = {
     'rating-alex': {
-      label: "Waiting for Alex's rating",
+      label: `Waiting for ${alexName}'s rating`,
       action: 'Rate now',
-      path: `/rate/${task.id}/alex`,
+      path: `/rate/${task.id}/${getUserPathSegment('alex')}`,
     },
     'rating-jamie': {
-      label: "Waiting for Jamie's rating",
+      label: `Waiting for ${jamieName}'s rating`,
       action: 'Rate now',
-      path: `/rate/${task.id}/jamie`,
+      path: `/rate/${task.id}/${getUserPathSegment('jamie')}`,
     },
     'reveal': {
       label: 'Ratings ready to reveal',

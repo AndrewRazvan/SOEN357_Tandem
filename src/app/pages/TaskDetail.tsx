@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { CheckCircle2, Circle, Lock } from 'lucide-react';
 import { useApp, getUserLabel } from '../context/AppContext';
 import { ScreenHeader } from '../components/ui/ScreenHeader';
@@ -28,9 +28,12 @@ function BurdenBar({ value }: { value: number }) {
   );
 }
 
+/**
+ * Task detail page: shows the agreed outcome (burden + assignment) and lets
+ * the assigned person mark the task complete.
+ */
 export function TaskDetail() {
   const { taskId } = useParams<{ taskId: string }>();
-  const navigate = useNavigate();
   const { getTask, completeTask, currentUser } = useApp();
 
   const task = getTask(taskId!);
@@ -46,6 +49,7 @@ export function TaskDetail() {
     );
   }
 
+  // Only the assignee can complete the task (mirrors the “ownership” model).
   const isAssignedToCurrentUser = task.assignedTo === currentUser;
   const isComplete = task.status === 'complete';
   const canComplete = isAssignedToCurrentUser && !isComplete;

@@ -13,11 +13,16 @@ const FEATURES = [
 const GREEN_BG = 'linear-gradient(160deg, #D9EDE6 0%, #F7F5F0 60%)';
 const ACCENT_BAR = 'linear-gradient(90deg, #4E7D6F, #2E7A28)';
 
+/**
+ * Onboarding: a tiny multi-phase intro (story → explanation → names).
+ * Persists a "welcomed" flag + display names in localStorage.
+ */
 export function Welcome() {
   const [phase, setPhase] = useState<Phase>('writing');
   const navigate = useNavigate();
 
   const handleGetStarted = (names: { alex: string; jamie: string }) => {
+    // Names are purely UI labels; core state still uses the stable user IDs.
     localStorage.setItem('tandem_user_names', JSON.stringify(names));
     localStorage.setItem('tandem_welcomed', '1');
     navigate('/');

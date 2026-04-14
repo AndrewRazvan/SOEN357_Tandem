@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useApp } from '../context/AppContext';
+import { getUserPathSegment, useApp } from '../context/AppContext';
 import { ScreenHeader } from '../components/ui/ScreenHeader';
 
+/**
+ * Create Task page: captures a task name/description, then kicks off the
+ * private rating flow (Alex rates first).
+ */
 export function CreateTask() {
   const navigate = useNavigate();
   const { addTask } = useApp();
@@ -13,7 +17,8 @@ export function CreateTask() {
   const handleSave = () => {
     if (!name.trim()) return;
     const id = addTask(name.trim(), description.trim() || undefined);
-    navigate(`/rate/${id}/alex`);
+    // Begin the two-step private rating flow.
+    navigate(`/rate/${id}/${getUserPathSegment('alex')}`);
   };
 
   return (

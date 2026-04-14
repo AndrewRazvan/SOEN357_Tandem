@@ -49,9 +49,11 @@ export function Reveal() {
   const alexRating = task.ratings.alex ?? 0;
   const jamieRating = task.ratings.jamie ?? 0;
   const diff = Math.abs(alexRating - jamieRating);
+  // “Aligned” is intentionally generous so close ratings feel like a quick win.
   const aligned = diff <= 1;
 
   const handleContinue = () => {
+    // Move the task along to the agreement/assignment step.
     updateTaskStatus(taskId!, 'agreement');
     navigate(`/agree/${taskId}`);
   };

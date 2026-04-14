@@ -24,7 +24,9 @@ function getInitial(user: User): string {
       const names = JSON.parse(stored) as Record<string, string>;
       if (names[user]?.[0]) return names[user][0].toUpperCase();
     }
-  } catch {}
+  } catch {
+    // If localStorage is unavailable or malformed, fall back to defaults.
+  }
   return user === 'alex' ? 'A' : 'J';
 }
 

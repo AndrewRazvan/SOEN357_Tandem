@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -13,6 +15,7 @@ export interface Task {
   };
   agreedBurden?: number;
   assignedTo?: User;
+  // Simple state machine that drives which page(s) the dashboard routes to next.
   status: 'rating-alex' | 'rating-jamie' | 'reveal' | 'agreement' | 'assigned' | 'complete';
   createdAt: string;
 }
@@ -119,6 +122,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       prev.map((t) => {
         if (t.id !== taskId) return t;
         const updatedRatings = { ...t.ratings, [user]: rating };
+
+        // Advance the negotiation flow:
+        // - after Alex rates → wait for Jamie
+        // - after Jamie rates (and Alex already rated) → reveal
         const nextStatus: Task['status'] =
           user === 'alex'
             ? 'rating-jamie'
@@ -179,15 +186,42 @@ export function useApp() {
 
 export function getUserLabel(user: User): string {
   try {
+    // Optional UX customization: map stable user IDs to user-provided display names.
     const stored = localStorage.getItem('tandem_user_names');
     if (stored) {
       const names = JSON.parse(stored) as Record<string, string>;
       if (names[user]) return names[user];
     }
-  } catch {}
+  } catch {
+    // If localStorage is unavailable or malformed, fall back to defaults.
+  }
   return user === 'alex' ? 'Alex' : 'Jamie';
 }
 
 export function getOtherUser(user: User): User {
   return user === 'alex' ? 'jamie' : 'alex';
+}
+
+function normalizeUserPathValue(value: string): string {
+  return value.trim().toLowerCase().replace(/[\s_-]+/g, '');
+}
+
+export function getUserPathSegment(user: User): string {
+  const label = getUserLabel(user);
+  return encodeURIComponent(label.trim().toLowerCase().replace(/\s+/g, '-'));
+}
+
+export function getUserFromPathSegment(segment?: string): User {
+  if (!segment) return 'alex';
+
+  const decoded = decodeURIComponent(segment);
+  const normalized = normalizeUserPathValue(decoded);
+
+  const alexLabel = normalizeUserPathValue(getUserLabel('alex'));
+  const jamieLabel = normalizeUserPathValue(getUserLabel('jamie'));
+
+  if (normalized === alexLabel || normalized === 'alex') return 'alex';
+  if (normalized === jamieLabel || normalized === 'jamie') return 'jamie';
+
+  return 'alex';
 }

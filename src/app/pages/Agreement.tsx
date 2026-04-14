@@ -16,6 +16,11 @@ const BURDEN_LABELS: Record<number, string> = {
   7: 'Very heavy',
 };
 
+/**
+ * Agreement step: show both private ratings, agree on a shared burden score,
+ * then assign the task to one person. Includes a simple “pass-the-phone”
+ * confirmation flow where each user must confirm.
+ */
 export function Agreement() {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
@@ -25,6 +30,7 @@ export function Agreement() {
 
   const alexRating = task?.ratings.alex ?? 1;
   const jamieRating = task?.ratings.jamie ?? 1;
+  // Start from the midpoint so negotiations begin from a neutral default.
   const suggested = Math.round((alexRating + jamieRating) / 2);
 
   const [agreedBurden, setAgreedBurden] = useState(suggested);
@@ -51,6 +57,7 @@ export function Agreement() {
     if (currentConfirmerDone) return;
     setConfirmedBy((prev) => ({ ...prev, [activeConfirmer]: true }));
 
+    // After Alex confirms, switch the active confirmer (and UI “profile”) to Jamie.
     if (activeConfirmer === 'alex' && !confirmedBy.jamie) {
       setActiveConfirmer('jamie');
       switchUser('jamie');
@@ -58,6 +65,7 @@ export function Agreement() {
   };
 
   const handleFinish = () => {
+    // Persist the agreed outcome, then reset the UI back to the default profile.
     assignTask(taskId!, assignedTo, agreedBurden);
     switchUser('alex');
     navigate('/');
